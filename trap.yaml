@@ -19,8 +19,9 @@ extra:
 
 # alias -> task binding. The alias is the trapstreet task id on submit.
 tasks:
-  # canonical binding — content-addressed to the public task repo (for `tp submit`)
-  obtain-diamond:
+  # canonical binding — alias == the trapstreet task id; content-addressed to the
+  # public task repo (its HEAD == the commit the task version is pinned to).
+  minecraft-obtain-diamond:
     source: git+https://github.com/Ruqii/minecraft-obtain-diamond
   # local checkout for offline dev (the task lives at the repo root after flattening)
   local:
