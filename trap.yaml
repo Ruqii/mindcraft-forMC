@@ -1,19 +1,27 @@
-cmd: node agent.js
+name: mindcraft-claude-sonnet     # leaderboard identity
 
 # Self-reported engine identity — surfaced on the run detail page.
 profile:
-  framework: mineflayer
+  model: claude-sonnet-4-6
+  framework: mindcraft
+
+# The Mindcraft agent plays a full ~30-min survival run, records it to mp4, and
+# prints the outcome JSON on the LAST stdout line (which the judge reads).
+cmd: node record-mindcraft.js
+timeout: 2000                     # a run is ~30 min; the default 600s would time out
 
 extra:
   notes: >
-    Phase-0 reference agent skeleton. Connects to a Minecraft server, records the
-    run via prismarine-viewer (headless -> mp4), plays the early game, and prints
-    a JSON outcome. NOT yet a guaranteed diamond-obtainer — see solution/README.md.
+    Mindcraft (LLM) agent driving a real Minecraft 1.20.4 survival run, recorded
+    to mp4. Prereqs: a funded ANTHROPIC_API_KEY, a local PaperMC server on :25565,
+    Node 20, and system Chrome. See mindcraft-integration/README.md. A free scripted
+    baseline is also available via `node record.js` (no API key).
 
-# Local alias(es) = the trapstreet task this solution answers, so `tp submit`
-# works without an explicit --as flag.
+# alias -> task binding. The alias is the trapstreet task id on submit.
 tasks:
+  # canonical binding — content-addressed to the public task repo (for `tp submit`)
   obtain-diamond:
-    source: ../task
-  run:
-    source: ../task
+    source: git+https://github.com/Ruqii/minecraft-obtain-diamond
+  # local checkout for offline dev (the task lives at the repo root after flattening)
+  local:
+    source: ../minecraft-obtain-diamond
