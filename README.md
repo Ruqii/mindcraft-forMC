@@ -1,8 +1,9 @@
-# minecraft-obtain-diamond — reference solution
+# mindcraft-forMC — reference solution for *obtain a diamond*
 
 Reference agents + recorder for the **[Obtain a Diamond](https://github.com/Ruqii/minecraft-obtain-diamond)**
-task. An agent plays real survival Minecraft, the run is recorded to an mp4, and
-the task's judge scores how far up the tech tree it got.
+task. An agent (primarily [Mindcraft](https://github.com/mindcraft-bots/mindcraft), an
+LLM-driven Minecraft bot) plays real survival Minecraft, the run is recorded to an mp4,
+and the task's judge scores how far up the tech tree it got.
 
 This repo is the **solution** half; the gradeable task (goal, judge, rubric) lives
 in its own repo: **https://github.com/Ruqii/minecraft-obtain-diamond**.
