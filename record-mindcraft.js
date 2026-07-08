@@ -101,26 +101,37 @@ async function main () {
     else log('ffmpeg failed:', r.stderr?.slice(-400))
   } else { log('too few frames, skipping mp4') }
 
-  // 7) read the shim's outcome, embed the video path, score with the task judge
+  // 7) read the shim's outcome, set the video, and (a) save it, (b) optionally
+  //    score it locally to stderr, (c) PRINT it to stdout as the last line — which
+  //    is what `tp run`'s judge reads to score the run.
   let outcome = null
   try { outcome = JSON.parse(fs.readFileSync(OUTCOME_FILE, 'utf8')) } catch { log('no outcome file (run may not have reached checkTaskDone)') }
-  if (outcome) {
-    outcome.video = fs.existsSync(finalMp4) ? finalMp4 : ''
-    fs.writeFileSync(path.join(OUT, 'outcome.json'), JSON.stringify(outcome, null, 2))
-    log('outcome:', JSON.stringify({ obtained: outcome.obtained, milestones: outcome.milestones, mindcraft_score: outcome.mindcraft_score }))
-    // score with the task's judge. The task lives in its own repo; point TASK_DIR
-    // at a local clone of minecraft-obtain-diamond/task (default: sibling checkout).
-    const TASK_DIR = process.env.TASK_DIR || path.join(os.homedir(), 'Documents/Projects/minecraft-obtain-diamond/task')
-    const judge = path.join(TASK_DIR, 'judge.py')
-    const exp = path.join(TASK_DIR, 'expected', 'obtain_diamond', 'expected.json')
-    if (!fs.existsSync(judge)) { log('task judge not found at', TASK_DIR, '- set TASK_DIR to the task repo checkout; skipping scoring'); process.exit(0) }
+  if (!outcome) {
+    // task didn't emit an outcome (e.g. killed early) — emit a minimal one so the
+    // judge has something to read rather than choking on empty stdout.
+    outcome = { obtained: false, item: 'diamond', count: 0, milestones: [], reason: 'no_outcome_file' }
+  }
+  // video: prefer an explicit public URL (TRAP_VIDEO, set for a submittable run),
+  // else the local mp4 path (fine for local scoring, not for the leaderboard).
+  outcome.video = process.env.TRAP_VIDEO || (fs.existsSync(finalMp4) ? finalMp4 : '')
+  fs.writeFileSync(path.join(OUT, 'outcome.json'), JSON.stringify(outcome, null, 2))
+  log('outcome:', JSON.stringify({ obtained: outcome.obtained, milestones: outcome.milestones, mindcraft_score: outcome.mindcraft_score, video: outcome.video }))
+
+  // optional local score to stderr (tp runs the real judge itself). TASK_DIR points
+  // at a local clone of the (flattened) task repo — judge.py is at its root.
+  const TASK_DIR = process.env.TASK_DIR || path.join(os.homedir(), 'Documents/Projects/minecraft-obtain-diamond')
+  const judge = path.join(TASK_DIR, 'judge.py')
+  const exp = path.join(TASK_DIR, 'expected', 'obtain_diamond', 'expected.json')
+  if (fs.existsSync(judge)) {
     const py = spawnSync('python3', ['-c',
-      `import json,sys; sys.path.insert(0,${JSON.stringify(path.dirname(judge))}); import judge; ` +
+      `import json,sys; sys.path.insert(0,${JSON.stringify(TASK_DIR)}); import judge; ` +
       `print(json.dumps(judge.evaluate(json.dumps(json.load(open(${JSON.stringify(path.join(OUT, 'outcome.json'))}))), json.load(open(${JSON.stringify(exp)})), 0)))`,
     ], { encoding: 'utf8' })
-    if (py.status === 0) log('JUDGE:', py.stdout.trim())
-    else log('judge error:', (py.stderr || '').slice(-300))
+    if (py.status === 0) log('LOCAL JUDGE:', py.stdout.trim()); else log('local judge error:', (py.stderr || '').slice(-200))
   }
+
+  // THE outcome line for tp's judge (last line on stdout; all logs above go to stderr)
+  process.stdout.write(JSON.stringify(outcome) + '\n')
   process.exit(0)
 }
 main().catch((e) => { log('FATAL', e.stack || e.message); process.exit(1) })
