@@ -1,0 +1,13 @@
+{
+    "obtain_diamond": {
+        "goal": "You are playing survival Minecraft from scratch with an empty inventory. Your objective is to obtain a diamond. Work up the tech tree: punch trees for wood, craft a crafting table and a wooden pickaxe, mine stone and craft a stone pickaxe, find and mine iron ore, build a furnace and smelt the iron, craft an iron pickaxe, then dig down to around Y=-59 and mine a diamond. Keep making steady progress and narrate what you are doing.",
+        "initial_inventory": {
+            "0": {}
+        },
+        "agent_count": 1,
+        "target": "diamond",
+        "number_of_target": 1,
+        "type": "techtree",
+        "timeout": 1800
+    }
+}

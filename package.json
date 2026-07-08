@@ -1,0 +1,21 @@
+{
+  "name": "minecraft-obtain-diamond-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "description": "Phase-0 reference agent: plays real Minecraft toward a diamond and records the run.",
+  "scripts": {
+    "start": "node agent.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "canvas": "^3.2.3",
+    "minecraft-data": "^3.70.0",
+    "mineflayer": "^4.20.0",
+    "mineflayer-pathfinder": "^2.4.5",
+    "prismarine-viewer": "^1.33.0",
+    "puppeteer-core": "^24.43.1"
+  }
+}

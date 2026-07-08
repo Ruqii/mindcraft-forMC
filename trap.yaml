@@ -1,0 +1,19 @@
+cmd: node agent.js
+
+# Self-reported engine identity — surfaced on the run detail page.
+profile:
+  framework: mineflayer
+
+extra:
+  notes: >
+    Phase-0 reference agent skeleton. Connects to a Minecraft server, records the
+    run via prismarine-viewer (headless -> mp4), plays the early game, and prints
+    a JSON outcome. NOT yet a guaranteed diamond-obtainer — see solution/README.md.
+
+# Local alias(es) = the trapstreet task this solution answers, so `tp submit`
+# works without an explicit --as flag.
+tasks:
+  obtain-diamond:
+    source: ../task
+  run:
+    source: ../task

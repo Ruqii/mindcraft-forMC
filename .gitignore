@@ -1,0 +1,19 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Minecraft server + world (download/generate locally; not committed)
+server/
+
+# Run artifacts
+*.log
+recordings/
+outcome.json
+trap_outcome.json
+
+# Recordings are large; host externally and link the URL in the outcome's `video` field.
+*.mp4
+
+# Python
+__pycache__/
+*.pyc
